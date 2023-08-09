@@ -1,12 +1,12 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import QWidget, QMenuBar, QPushButton, QVBoxLayout, QMainWindow
 from PySide6.QtGui import QFontMetrics
 import database
 from modelos import Contexto, Usuario
-from ui_vista_principal import Ui_Form
+from ui_vista_main import Ui_vista_main
 
 
-class ControlandoraVistaPrincipal(QWidget, Ui_Form):
+class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -16,16 +16,16 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
         self.Layout_lista_prompts.setAlignment(Qt.AlignTop)
         self.widget = QWidget()
         self.widget.setLayout(self.Layout_lista_prompts)
-        self.boton_anadir.clicked.connect(self.anadir)
-        self.ButtonBorrar.clicked.connect(self.borrar)
-
-        self.ButtonVaciar.clicked.connect(self.vaciar)
-        self.ButtonVaciar.setFixedSize(100, 25)
-        self.ButtonCopy.clicked.connect(self.copiar)
-        self.ButtonCopy.setFixedSize(100, 25)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setWidget(self.widget)
-        self.scrollArea.setMinimumSize(300, 400)
+        self.AnadirButton.clicked.connect(self.anadir)
+        self.BorrarButton.clicked.connect(self.borrar)
+        
+        self.VaciarButton.clicked.connect(self.vaciar)
+        self.VaciarButton.setFixedSize(100, 25)
+        self.CopyButton.clicked.connect(self.copiar)
+        self.CopyButton.setFixedSize(100, 25)
+        self.ScrollArea.setWidgetResizable(True)
+        self.ScrollArea.setWidget(self.widget)
+        self.ScrollArea.setMinimumSize(300, 400)
 
     def get_boton_seleccionado(self):
 
@@ -35,7 +35,7 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
         # return self.boton_seleccionado
 
     def anadir(self):
-        titulo_prompt = self.entrada_titulo_prompt.text()
+        titulo_prompt = self.entrada_titulo_prompt_3.text()
         usuario_activo = database.sesion.query(Usuario).filter(
             Usuario.sesion_iniciada == True
         ).first()
@@ -44,12 +44,12 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
             Contexto.usuario_id == usuario_activo.id,
             Contexto.nombre_contexto == titulo_prompt).first()
 
-        database.sesion.add(Contexto(nombre_contexto=self.entrada_titulo_prompt.text(),
-                                     contenido=self.cuadro_texto_prompt.toPlainText(),
+        database.sesion.add(Contexto(nombre_contexto=self.entrada_titulo_prompt_3.text(),
+                                     contenido=self.cuadro_text_prompt.toPlainText(),
                                      usuario_contextos=usuario_activo))
         database.sesion.commit()
         if buscando_existencia_contexto == None:
-            titulo_prompt = self.entrada_titulo_prompt.text()
+            titulo_prompt = self.entrada_titulo_prompt_3.text()
             nuevo_boton = BotonEspecialPrompt(titulo_prompt)
             nuevo_boton.nombre_contexto_vinculado = titulo_prompt
             nuevo_boton.setMaximumSize(290, 30)
@@ -61,8 +61,8 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
             nuevo_boton.clicked.connect(self.get_boton_seleccionado)
 
             self.Layout_lista_prompts.addWidget(nuevo_boton)
-            self.entrada_titulo_prompt.setText("")
-            self.cuadro_texto_prompt.setText("")
+            self.entrada_titulo_prompt_3.setText("")
+            self.cuadro_text_prompt.setText("")
         else:
             print("Ese prompt ya existe")
 
@@ -93,11 +93,11 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
         database.sesion.commit()
 
     def vaciar(self):
-        self.cuadro_texto_prompt.setText("")
+        self.cuadro_text_prompt.setText("")
 
     def copiar(self):
-        self.cuadro_texto_prompt.selectAll()
-        self.cuadro_texto_prompt.copy()
+        self.cuadro_text_prompt.selectAll()
+        self.cuadro_text_prompt.copy()
 
     def mostrar_prompt(self, titulo):
         usuario_activo = database.sesion.query(Usuario).filter(
@@ -107,7 +107,7 @@ class ControlandoraVistaPrincipal(QWidget, Ui_Form):
             Contexto.usuario_id == usuario_activo.id,
             Contexto.nombre_contexto == titulo).first()
 
-        self.cuadro_texto_prompt.setText(prompt.contenido)
+        self.cuadro_text_prompt.setText(prompt.contenido)
 
     def mostrar_prompts_guardados(self):
         lista_botones = []
