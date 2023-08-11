@@ -11,6 +11,9 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         super().__init__()
         self.setupUi(self)
 
+        self.lista_botones = []
+
+        #self.actionLog_out_2.triggered.connect(self.log_out)
         self.boton_seleccionado: BotonEspecialPrompt()
         self.Layout_lista_prompts = QVBoxLayout()
         self.Layout_lista_prompts.setAlignment(Qt.AlignTop)
@@ -26,6 +29,7 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         self.ScrollArea.setWidgetResizable(True)
         self.ScrollArea.setWidget(self.widget)
         self.ScrollArea.setMinimumSize(300, 400)
+
 
     def get_boton_seleccionado(self):
 
@@ -59,6 +63,7 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
                                                                             nuevo_boton.width()-25))
 
             nuevo_boton.clicked.connect(self.get_boton_seleccionado)
+            self.lista_botones.append(nuevo_boton)
 
             self.Layout_lista_prompts.addWidget(nuevo_boton)
             self.entrada_titulo_prompt_3.setText("")
@@ -88,6 +93,11 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
 
         self.Layout_lista_prompts.removeWidget(self.boton_seleccionado)
         self.boton_seleccionado.deleteLater()
+        for i in self.lista_botones:
+            if i.nombre_contexto_vinculado ==  nombre_contexto:
+                self.lista_botones.remove(i)
+        
+
 
         # Hacemos commit
         database.sesion.commit()
@@ -110,7 +120,7 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         self.cuadro_text_prompt.setText(prompt.contenido)
 
     def mostrar_prompts_guardados(self):
-        lista_botones = []
+        #lista_botones = []
         usuario_activo = database.sesion.query(Usuario).filter(
             Usuario.sesion_iniciada == True
         ).first()
@@ -125,15 +135,31 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
                 prep_boton.nombre_contexto_vinculado = i.nombre_contexto
                 prep_boton.setText(QFontMetrics(prep_boton.font()).elidedText(i.nombre_contexto, Qt.ElideRight,
                                                                               prep_boton.width()-25))
-                lista_botones.append(prep_boton)
+                print('entre')
+                self.lista_botones.append(prep_boton)
 
         list(map(lambda boton: boton.clicked.connect(
-            lambda: self.mostrar_prompt(boton.nombre_contexto_vinculado)), lista_botones))
+            lambda: self.mostrar_prompt(boton.nombre_contexto_vinculado)), self.lista_botones))
         list(map(lambda boton: boton.clicked.connect(
-            self.get_boton_seleccionado), lista_botones))
+            self.get_boton_seleccionado), self.lista_botones))
 
-        list(map(lambda i: self.Layout_lista_prompts.addWidget(i), lista_botones))
+        list(map(lambda i: self.Layout_lista_prompts.addWidget(i), self.lista_botones))
 
+    def vaciar_prompts(self):
+        
+        for i in self.lista_botones:
+            self.Layout_lista_prompts.removeWidget(i)
+            i.deleteLater()
+        self.lista_botones = []
+    def log_out(self):
+        usuario_activo = database.sesion.query(Usuario).filter(
+            Usuario.sesion_iniciada == True
+        ).first()
+        usuario_activo.sesion_iniciada = False
+        database.sesion.commit()
+
+        
+        
 
 class BotonEspecialPrompt(QPushButton):
     def __init__(self, nombre):

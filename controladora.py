@@ -20,6 +20,8 @@ class Controladora(QWidget):
         self.vista_registro.boton_registrar.clicked.connect(self.accion_registrar)
         self.vista_registro.boton_cancelar.clicked.connect(self.accion_cancelar)
 
+        self.vista_principal.actionLog_out_2.triggered.connect(self.accion_log_out)
+
     def login(self):
 
         if self.vista_login.login_validator():
@@ -41,8 +43,20 @@ class Controladora(QWidget):
                                           QMessageBox.Ok)
             if ret == QMessageBox.Ok:
                 self.vista_registro.close()
+                self.vista_login.usuario_entrada.setText("")
+                self.vista_login.contrasena_entrada.setText("")
                 self.vista_login.show()
 
     def accion_cancelar(self):
         self.vista_registro.close()
+        self.vista_login.usuario_entrada.setText("")
+        self.vista_login.contrasena_entrada.setText("")
+        self.vista_login.show()
+
+    def accion_log_out(self):
+        self.vista_principal.vaciar_prompts()
+        self.vista_principal.log_out()
+        self.vista_principal.close()
+        self.vista_login.usuario_entrada.setText("")
+        self.vista_login.contrasena_entrada.setText("")
         self.vista_login.show()
