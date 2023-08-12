@@ -1,5 +1,7 @@
 from PySide6.QtWidgets import QMessageBox
 from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeySequence, QShortcut
 
 from controlado_vista_login import ControladoraLogin
 from controlando_vista_principal import ControlandoraVistaPrincipal
@@ -21,6 +23,15 @@ class Controladora(QWidget):
         self.vista_registro.boton_cancelar.clicked.connect(self.accion_cancelar)
 
         self.vista_principal.actionLog_out_2.triggered.connect(self.accion_log_out)
+
+        # Crear un atajo de teclado para el botón "registrar"
+        shortcut_registrar = QShortcut(QKeySequence(Qt.Key_Return), self.vista_registro)
+        shortcut_registrar.activated.connect(self.accion_registrar)
+
+        # Crear un atajo de teclado para el botón "entrar"
+        shortcut_entrar = QShortcut(QKeySequence(Qt.Key_Return), self.vista_login)
+        shortcut_entrar.activated.connect(self.login)
+
 
     def login(self):
 
@@ -60,3 +71,4 @@ class Controladora(QWidget):
         self.vista_login.usuario_entrada.setText("")
         self.vista_login.contrasena_entrada.setText("")
         self.vista_login.show()
+
