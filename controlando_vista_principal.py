@@ -13,23 +13,27 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
 
         self.lista_botones = []
 
-        #self.actionLog_out_2.triggered.connect(self.log_out)
+        # self.actionLog_out_2.triggered.connect(self.log_out)
         self.boton_seleccionado: BotonEspecialPrompt()
+
         self.Layout_lista_prompts = QVBoxLayout()
         self.Layout_lista_prompts.setAlignment(Qt.AlignTop)
         self.widget = QWidget()
         self.widget.setLayout(self.Layout_lista_prompts)
+
+        self.entrada_titulo_prompt_3.selectionChanged.connect(
+            lambda: self.entrada_titulo_prompt_3.setText(''))
+
         self.AnadirButton.clicked.connect(self.anadir)
         self.BorrarButton.clicked.connect(self.borrar)
-        
         self.VaciarButton.clicked.connect(self.vaciar)
         self.VaciarButton.setFixedSize(100, 25)
         self.CopyButton.clicked.connect(self.copiar)
         self.CopyButton.setFixedSize(100, 25)
+
         self.ScrollArea.setWidgetResizable(True)
         self.ScrollArea.setWidget(self.widget)
         self.ScrollArea.setMinimumSize(300, 400)
-
 
     def get_boton_seleccionado(self):
 
@@ -94,13 +98,13 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         self.Layout_lista_prompts.removeWidget(self.boton_seleccionado)
         self.boton_seleccionado.deleteLater()
         for i in self.lista_botones:
-            if i.nombre_contexto_vinculado ==  nombre_contexto:
+            if i.nombre_contexto_vinculado == nombre_contexto:
                 self.lista_botones.remove(i)
-        
-
 
         # Hacemos commit
         database.sesion.commit()
+        self.entrada_titulo_prompt_3.clear()
+        self.cuadro_text_prompt.clear()
 
     def vaciar(self):
         self.cuadro_text_prompt.setText("")
@@ -118,9 +122,10 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
             Contexto.nombre_contexto == titulo).first()
 
         self.cuadro_text_prompt.setText(prompt.contenido)
+        self.entrada_titulo_prompt_3.setText(titulo)
 
     def mostrar_prompts_guardados(self):
-        #lista_botones = []
+        # lista_botones = []
         usuario_activo = database.sesion.query(Usuario).filter(
             Usuario.sesion_iniciada == True
         ).first()
@@ -146,20 +151,20 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         list(map(lambda i: self.Layout_lista_prompts.addWidget(i), self.lista_botones))
 
     def vaciar_prompts(self):
-        
+
         for i in self.lista_botones:
             self.Layout_lista_prompts.removeWidget(i)
             i.deleteLater()
         self.lista_botones = []
+
     def log_out(self):
         usuario_activo = database.sesion.query(Usuario).filter(
             Usuario.sesion_iniciada == True
         ).first()
         usuario_activo.sesion_iniciada = False
         database.sesion.commit()
+        self.cuadro_text_prompt.setText('')
 
-        
-        
 
 class BotonEspecialPrompt(QPushButton):
     def __init__(self, nombre):

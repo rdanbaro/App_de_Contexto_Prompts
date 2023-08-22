@@ -219,7 +219,7 @@ class Ui_vista_main(object):
         self.actionsession.setText(QCoreApplication.translate("vista_main", u"session", None))
         self.actionLog_out_2.setText(QCoreApplication.translate("vista_main", u"Log out", None))
         self.label_titulo_prompt_3.setText(QCoreApplication.translate("vista_main", u"T\u00edtulo prompt:", None))
-        self.VaciarButton.setText(QCoreApplication.translate("vista_main", u"Vaciar Prompt", None))
+        self.VaciarButton.setText(QCoreApplication.translate("vista_main", u"Vaciar ", None))
         self.CopyButton.setText(QCoreApplication.translate("vista_main", u"Copy", None))
         self.label_9.setText("")
         self.label_10.setText("")
