@@ -54,14 +54,22 @@ class Controladora(QWidget):
                                           QMessageBox.Ok)
             if ret == QMessageBox.Ok:
                 self.vista_registro.close()
-                self.vista_login.usuario_entrada.setText("")
-                self.vista_login.contrasena_entrada.setText("")
+                self.vista_login.usuario_entrada.clear()
+                self.vista_login.contrasena_entrada.clear()
+
+                self.vista_registro.entrada_usuario_registro.clear()
+                self.vista_registro.entrada_contrasena_registro.clear()
+                self.vista_registro.entrada_confirmar_contrasena.clear()
                 self.vista_login.show()
 
     def accion_cancelar(self):
         self.vista_registro.close()
-        self.vista_login.usuario_entrada.setText("")
-        self.vista_login.contrasena_entrada.setText("")
+        self.vista_login.usuario_entrada.clear()
+        self.vista_login.contrasena_entrada.clear()
+
+        self.vista_registro.entrada_usuario_registro.clear()
+        self.vista_registro.entrada_contrasena_registro.clear()
+        self.vista_registro.entrada_confirmar_contrasena.clear()
         self.vista_login.show()
 
     def accion_log_out(self):

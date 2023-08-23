@@ -61,6 +61,8 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
             nuevo_boton = BotonEspecialPrompt(titulo_prompt)
             nuevo_boton.nombre_contexto_vinculado = titulo_prompt
             nuevo_boton.setMaximumSize(290, 30)
+            if len(titulo_prompt) > 34:
+                nuevo_boton.setToolTip(titulo_prompt)
             nuevo_boton.clicked.connect(
                 lambda: self.mostrar_prompt(titulo_prompt))
             nuevo_boton.setText(QFontMetrics(nuevo_boton.font()).elidedText(titulo_prompt, Qt.ElideRight,
@@ -140,6 +142,8 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
                 prep_boton.nombre_contexto_vinculado = i.nombre_contexto
                 prep_boton.setText(QFontMetrics(prep_boton.font()).elidedText(i.nombre_contexto, Qt.ElideRight,
                                                                               prep_boton.width()-25))
+                if len(i.nombre_contexto) > 34:
+                    prep_boton.setToolTip(i.nombre_contexto)
                 print('entre')
                 self.lista_botones.append(prep_boton)
 

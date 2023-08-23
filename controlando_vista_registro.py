@@ -1,5 +1,5 @@
 from ui_vista_registro import Ui_VistaRegistro
-from PySide6.QtWidgets import QWidget, QMessageBox
+from PySide6.QtWidgets import QWidget, QMessageBox, QLineEdit
 import database
 from modelos import Usuario
 
@@ -9,7 +9,8 @@ class ControladoraRegistro(QWidget, Ui_VistaRegistro):
         super().__init__()
         self.setupUi(self)
 
-
+        self.entrada_contrasena_registro.setEchoMode(QLineEdit.Password)
+        self.entrada_confirmar_contrasena.setEchoMode(QLineEdit.Password)
 
     def register_validator(self):
         usuario = self.entrada_usuario_registro.text()
