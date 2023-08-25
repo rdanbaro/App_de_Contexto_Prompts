@@ -43,39 +43,53 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         # return self.boton_seleccionado
 
     def anadir(self):
-        titulo_prompt = self.entrada_titulo_prompt_3.text()
-        usuario_activo = database.sesion.query(Usuario).filter(
-            Usuario.sesion_iniciada == True
-        ).first()
-
-        buscando_existencia_contexto = database.sesion.query(Contexto).filter(
-            Contexto.usuario_id == usuario_activo.id,
-            Contexto.nombre_contexto == titulo_prompt).first()
-
-        database.sesion.add(Contexto(nombre_contexto=self.entrada_titulo_prompt_3.text(),
-                                     contenido=self.cuadro_text_prompt.toPlainText(),
-                                     usuario_contextos=usuario_activo))
-        database.sesion.commit()
-        if buscando_existencia_contexto == None:
+        try:
             titulo_prompt = self.entrada_titulo_prompt_3.text()
-            nuevo_boton = BotonEspecialPrompt(titulo_prompt)
-            nuevo_boton.nombre_contexto_vinculado = titulo_prompt
-            nuevo_boton.setMaximumSize(290, 30)
-            if len(titulo_prompt) > 34:
-                nuevo_boton.setToolTip(titulo_prompt)
-            nuevo_boton.clicked.connect(
-                lambda: self.mostrar_prompt(titulo_prompt))
-            nuevo_boton.setText(QFontMetrics(nuevo_boton.font()).elidedText(titulo_prompt, Qt.ElideRight,
-                                                                            nuevo_boton.width()-25))
+            usuario_activo = database.sesion.query(Usuario).filter(
+                Usuario.sesion_iniciada == True
+            ).first()
+            if titulo_prompt == '':
+                print('Titulo no valido')
+            elif self.cuadro_text_prompt.toPlainText() == '':
+                print('Por favor escriba algun en texto en el prompt antes de anadirlo')
 
-            nuevo_boton.clicked.connect(self.get_boton_seleccionado)
-            self.lista_botones.append(nuevo_boton)
+            elif len(titulo_prompt) < 100 and len(self.cuadro_text_prompt.toPlainText()) < 550:
+                buscando_existencia_contexto = database.sesion.query(Contexto).filter(
+                    Contexto.usuario_id == usuario_activo.id,
+                    Contexto.nombre_contexto == titulo_prompt).first()
 
-            self.Layout_lista_prompts.addWidget(nuevo_boton)
-            self.entrada_titulo_prompt_3.setText("")
-            self.cuadro_text_prompt.setText("")
-        else:
-            print("Ese prompt ya existe")
+                if buscando_existencia_contexto == None:
+                    database.sesion.add(Contexto(nombre_contexto=titulo_prompt,
+                                                 contenido=self.cuadro_text_prompt.toPlainText(),
+                                                 usuario_contextos=usuario_activo))
+                    database.sesion.commit()
+
+                    nuevo_boton = BotonEspecialPrompt(titulo_prompt)
+                    nuevo_boton.nombre_contexto_vinculado = titulo_prompt
+                    nuevo_boton.setMaximumSize(290, 30)
+                    if len(titulo_prompt) > 34:
+                        nuevo_boton.setToolTip(titulo_prompt)
+                    nuevo_boton.clicked.connect(
+                        lambda: self.mostrar_prompt(titulo_prompt))
+                    nuevo_boton.setText(QFontMetrics(nuevo_boton.font()).elidedText(titulo_prompt, Qt.ElideRight,
+                                                                                    nuevo_boton.width()-25))
+
+                    nuevo_boton.clicked.connect(self.get_boton_seleccionado)
+                    self.lista_botones.append(nuevo_boton)
+
+                    self.Layout_lista_prompts.addWidget(nuevo_boton)
+                    self.entrada_titulo_prompt_3.setText("")
+                    self.cuadro_text_prompt.setText("")
+                else:
+                    print("Ese prompt ya existe")
+
+            else:
+                if len(titulo_prompt) > 100:
+                    print('El titulo del prompt es demasiado largo!')
+                if len(self.cuadro_text_prompt.toPlainText()) > 550:
+                    print('El prompt es demasiado largo!')
+        except Exception as e:
+            print(f'Algun error ha ocurrido:{e}')
 
     def borrar(self):
         # # Obtenemos el botón pulsado
@@ -144,7 +158,7 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
                                                                               prep_boton.width()-25))
                 if len(i.nombre_contexto) > 34:
                     prep_boton.setToolTip(i.nombre_contexto)
-                print('entre')
+
                 self.lista_botones.append(prep_boton)
 
         list(map(lambda boton: boton.clicked.connect(
@@ -167,7 +181,8 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
         ).first()
         usuario_activo.sesion_iniciada = False
         database.sesion.commit()
-        self.cuadro_text_prompt.setText('')
+        self.cuadro_text_prompt.clear()
+        self.entrada_titulo_prompt_3.clear()
 
 
 class BotonEspecialPrompt(QPushButton):

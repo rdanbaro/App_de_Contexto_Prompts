@@ -26,10 +26,14 @@ class ControladoraLogin(QWidget, Ui_VentanaPrincipal):
                 database.sesion.add(user)
                 database.sesion.commit()
                 return True
+
+            elif usuario == '' or contrasena == '':
+                print('Faltan campos por rellenar')
+                
             else:
-                print("No pude entrar")
+                print("Combinacion de usuario y contrasena incorrecta")
                 self.contrasena_entrada.setText("")
-                print(self.vista_login.contrasena_entrada.text())
+                
                 return False
         except Exception as e:
             print(f"Ocurrió un error al intentar iniciar sesión: {e}")

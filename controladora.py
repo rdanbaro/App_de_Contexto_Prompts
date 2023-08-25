@@ -39,8 +39,7 @@ class Controladora(QWidget):
             self.vista_login.close()
             self.vista_principal.show()
             self.vista_principal.mostrar_prompts_guardados()
-        else:
-            print("No pude entrar")
+        
 
     def registro(self):
         self.vista_login.close()

@@ -23,18 +23,29 @@ class ControladoraRegistro(QWidget, Ui_VistaRegistro):
             if buscando_existencia_usuario != None:
                 print("Ese nombre de usuario ya existe!")
                 cuenta_valida = False
+
+            if usuario == '':
+                print('usuario no valido')
+                cuenta_valida = False
             if contrasena == "":
                 print("contrasena no valida")
                 cuenta_valida = False
             if contrasena != confirmar_contrasena:
                 cuenta_valida = False
                 print("Verifique que la confirmacion de la contrasena sea correcta")
+            if len(usuario) > 50:
+                print('nombre de usuario demasiado largo')
+                cuenta_valida = False
+            if len(contrasena) > 50:
+                print('contrasena demasiado larga')
+
             if cuenta_valida:
-                database.sesion.add(Usuario(nombre_usuario=usuario, contrasena=contrasena, sesion_iniciada=False))
+                database.sesion.add(
+                    Usuario(nombre_usuario=usuario, contrasena=contrasena, sesion_iniciada=False))
                 database.sesion.commit()
 
         except Exception as e:
-            print(f"Algun error ha ocurrido, verifique que los campos sean validos: {e}")
-
+            print(
+                f"Algun error ha ocurrido, verifique que los campos sean validos: {e}")
+            cuenta_valida = False
         return cuenta_valida
-
