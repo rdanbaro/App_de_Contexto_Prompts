@@ -50,9 +50,12 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
             ).first()
             if titulo_prompt == '':
                 print('Titulo no valido')
+                self.label_error_visual_main.setText(
+                    'Ingrese un titulo por favor')
             elif self.cuadro_text_prompt.toPlainText() == '':
                 print('Por favor escriba algun en texto en el prompt antes de anadirlo')
-
+                self.label_error_visual_main.setText(
+                    'Por favor escriba el contenido del prompt a guardar')
             elif len(titulo_prompt) < 100 and len(self.cuadro_text_prompt.toPlainText()) < 550:
                 buscando_existencia_contexto = database.sesion.query(Contexto).filter(
                     Contexto.usuario_id == usuario_activo.id,
@@ -82,15 +85,17 @@ class ControlandoraVistaPrincipal(QMainWindow, Ui_vista_main):
                     self.cuadro_text_prompt.setText("")
                 else:
                     print("Ese prompt ya existe")
-
+                    self.label_error_visual_main.setText('ya existe un prompt guardado con ese titulo')
             else:
                 if len(titulo_prompt) > 100:
                     print('El titulo del prompt es demasiado largo!')
+                    self.label_error_visual_main.setText('El titulo del prompt es demasiado largo!')
                 if len(self.cuadro_text_prompt.toPlainText()) > 550:
                     print('El prompt es demasiado largo!')
+                    self.label_error_visual_main.setText('El prompt es demasiado largo!')
         except Exception as e:
             print(f'Algun error ha ocurrido:{e}')
-
+            self.label_error_visual_main.setText('Ha ocurrido algun error')
     def borrar(self):
         # # Obtenemos el botón pulsado
         # boton = self.sender()

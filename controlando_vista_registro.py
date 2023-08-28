@@ -9,6 +9,7 @@ class ControladoraRegistro(QWidget, Ui_VistaRegistro):
         super().__init__()
         self.setupUi(self)
 
+        self.setFixedSize(390, 360)
         self.entrada_contrasena_registro.setEchoMode(QLineEdit.Password)
         self.entrada_confirmar_contrasena.setEchoMode(QLineEdit.Password)
 
@@ -20,24 +21,34 @@ class ControladoraRegistro(QWidget, Ui_VistaRegistro):
             Usuario.nombre_usuario == usuario).first()
         cuenta_valida = True
         try:
-            if buscando_existencia_usuario != None:
+            if usuario == '' or contrasena == '' or confirmar_contrasena == '':
+                print('usuario no valido')
+                self.label_error_visual_reg.setText(
+                    '                        Faltan campos por completar!')
+                cuenta_valida = False
+
+            elif len(usuario) > 50:
+                print('nombre de usuario demasiado largo')
+                self.label_error_visual_reg.setText(
+                    '                        nombre de usuario demasiado largo')
+                cuenta_valida = False
+            elif buscando_existencia_usuario != None:
                 print("Ese nombre de usuario ya existe!")
                 cuenta_valida = False
 
-            if usuario == '':
-                print('usuario no valido')
-                cuenta_valida = False
-            if contrasena == "":
-                print("contrasena no valida")
-                cuenta_valida = False
-            if contrasena != confirmar_contrasena:
-                cuenta_valida = False
-                print("Verifique que la confirmacion de la contrasena sea correcta")
-            if len(usuario) > 50:
-                print('nombre de usuario demasiado largo')
-                cuenta_valida = False
-            if len(contrasena) > 50:
+            elif len(contrasena) > 50:
                 print('contrasena demasiado larga')
+                self.label_error_visual_reg.setText(
+                    '                        contrasena demasiado larga')
+                cuenta_valida = False
+            
+                cuenta_valida = False
+
+            elif contrasena != confirmar_contrasena:
+                print("La confirmacion y la contrasena no coinciden")
+                self.label_error_visual_reg.setText(
+                    ' La confirmacion y la contrasena no coinciden')
+                cuenta_valida = False
 
             if cuenta_valida:
                 database.sesion.add(
@@ -47,5 +58,7 @@ class ControladoraRegistro(QWidget, Ui_VistaRegistro):
         except Exception as e:
             print(
                 f"Algun error ha ocurrido, verifique que los campos sean validos: {e}")
+            self.label_error_visual_reg.setText(
+                'Algun error ha ocurrido, verifique que los campos sean validos')
             cuenta_valida = False
         return cuenta_valida

@@ -10,6 +10,7 @@ class ControladoraLogin(QWidget, Ui_VentanaPrincipal):
         super().__init__()
         self.setupUi(self)
 
+        self.setFixedSize(390, 360)
         self.contrasena_entrada.setEchoMode(QLineEdit.Password)
 
     def login_validator(self):
@@ -29,14 +30,16 @@ class ControladoraLogin(QWidget, Ui_VentanaPrincipal):
 
             elif usuario == '' or contrasena == '':
                 print('Faltan campos por rellenar')
-                
+                self.label_error_visual.setText('                        Faltan campos por rellenar')
             else:
                 print("Combinacion de usuario y contrasena incorrecta")
+                self.label_error_visual.setText('Combinacion de usuario y contrasena incorrecta')
                 self.contrasena_entrada.setText("")
                 
                 return False
         except Exception as e:
             print(f"Ocurrió un error al intentar iniciar sesión: {e}")
+            self.label_error_visual.setText('Ocurrió un error al intentar iniciar sesión')
             return False
 
 
