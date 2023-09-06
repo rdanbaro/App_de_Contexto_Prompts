@@ -1,8 +1,8 @@
 import sys
 from PySide6.QtWidgets import QApplication
 import database
-from controladora import Controladora
-from modelos import *
+from Controladoras.controladora import Controladora
+from Modelo.modelos import *
 
 if __name__ == "__main__":
     #Base.metadata.drop_all(database.link)

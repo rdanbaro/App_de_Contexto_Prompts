@@ -23,6 +23,7 @@ class Ui_VentanaPrincipal(object):
         if not VentanaPrincipal.objectName():
             VentanaPrincipal.setObjectName(u"VentanaPrincipal")
         VentanaPrincipal.resize(383, 321)
+        VentanaPrincipal.move(2500, 600)
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(3)
         sizePolicy.setVerticalStretch(0)
